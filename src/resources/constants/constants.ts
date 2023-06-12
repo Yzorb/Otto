@@ -1,0 +1,1 @@
+export const nameSpace: string = 'otto:bot';
