@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { nameSpace } from '../../resources/constants/constants.js';
-import { ILogger } from '../../resources/constants/interfaces.js'
+import { ILogger } from '../../resources/constants/interfaces.js';
 
 const defaultLogger: debug.IDebugger = debug(nameSpace);
 
@@ -22,4 +22,4 @@ const logger: ILogger = {
 	},
 };
 
-export { logger as default, ILogger };
+export default logger;
