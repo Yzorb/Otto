@@ -8,4 +8,6 @@ config.DotEnvConfig({
 
 const otto = new Otto();
 
+otto.loadListeners();
+
 otto.connect();
