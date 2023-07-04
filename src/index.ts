@@ -3,7 +3,7 @@ import config from './utils/helpers/config.js';
 
 config.EnableLogger();
 config.DotEnvConfig({
-	override: true,
+	debug: true,
 });
 
 const otto = new Otto();

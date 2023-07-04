@@ -15,4 +15,16 @@ const usersSchema = new Schema({
 			default: false,
 		},
 	},
+	blackList: {
+		isBlacked: {
+			type: Boolean,
+			default: false,
+		},
+		reason: {
+			type: String,
+			default: undefined,
+		},
+	},
 });
+
+export default model('users', usersSchema);

@@ -1,0 +1,10 @@
+src
+.vscode
+node_modules
+LICENSE
+README.md
+.eslintrc.yml
+.prettierrc
+tsconfig.json
+.gitigonre
+env.d.ts

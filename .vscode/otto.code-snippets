@@ -1,0 +1,17 @@
+{
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+	"Context command template": {
+		"scope": "javascript, typescript",
+		"prefix": "contextCommand",
+		"description": "Create context command template",
+		"body": ["import { ContextMenuCommandInteraction, CacheType } from 'discord.js';", "import ContextCommandBase from '../../../Structures/Bases/ContextCommandBase.js';", "import Otto from '../../../Structures/Clients/Otto.js';", "export default class extends ContextCommandBase implements IContextCommand {}"]
+	}
+}

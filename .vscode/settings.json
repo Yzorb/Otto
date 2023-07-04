@@ -1,11 +1,12 @@
 {
 	"material-icon-theme.files.color": "#000",
 	"material-icon-theme.folders.color": "#fff",
+	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true,
+		"source.fixAll.eslint": true,
 		"source.organizeImports": true
 	},
-	"editor.formatOnSave": true,
 	"emmet.triggerExpansionOnTab": true,
 	"emmet.showSuggestionsAsSnippets": true,
 	"emmet.excludeLanguages": ["markdown"],
@@ -22,6 +23,5 @@
 	"typescript.preferences.importModuleSpecifierEnding": "js",
 	"typescript.preferences.quoteStyle": "single",
 	"dotenv.enableAutocloaking": false,
-	"eslint.enable": true,
-	"eslint.run": "onType"
+	"eslint.enable": true
 }

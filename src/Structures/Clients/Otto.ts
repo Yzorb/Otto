@@ -1,14 +1,14 @@
-import { Client, CommandInteraction } from 'discord.js';
+import { Client, CommandInteraction, ContextMenuCommandInteraction } from 'discord.js';
 import mongoose from 'mongoose';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { ottoConfig } from '../../resources/constants/constants.js';
-import { ILogger } from '../../resources/constants/interfaces.js';
+import { IHLogger } from '../../resources/constants/interfaces.js';
 import logger from '../../utils/helpers/logger.js';
+import { dirname } from '../../utils/utils.js';
 
 export default class extends Client {
-	logger: ILogger;
+	logger: IHLogger;
 
 	constructor() {
 		super(ottoConfig);
@@ -18,19 +18,16 @@ export default class extends Client {
 
 	public async loadListeners(): Promise<void> {
 		try {
-			const dirname: string = path.dirname(fileURLToPath(import.meta.url));
-			const folders: string[] = fs.readdirSync(path.join(dirname, '..', '..', 'listeners'));
-
+			const folders: string[] = fs.readdirSync(path.join(dirname(import.meta.url), '..', '..', 'listeners'));
 			for (const folder of folders) {
-				const files: string[] = fs.readdirSync(path.join(dirname, '..', '..', 'listeners', folder));
-
+				const files: string[] = fs.readdirSync(path.join(dirname(import.meta.url), '..', '..', 'listeners', folder));
 				for (const file of files) {
 					if (file.endsWith('.js')) {
 						const options = await import(`../../listeners/${folder}/${file}`);
 						const { name, once, callback } = options.default;
 
 						switch (folder) {
-							default:
+							case 'otto':
 								if (once) {
 									this.once(name, (...args) => callback(this, ...args));
 								} else {
@@ -60,26 +57,51 @@ export default class extends Client {
 		}
 	}
 
-	public async loadCommands(interaction: CommandInteraction | undefined = undefined): Promise<object[] | undefined> {
+	public async loadSlashCommands(interaction?: CommandInteraction): Promise<object[] | undefined> {
 		try {
-			const dirname: string = path.dirname(fileURLToPath(import.meta.url));
-			const folders: string[] = fs.readdirSync(path.join(dirname, '..', '..', 'slashCommands', 'commands'));
+			const folders: string[] = fs.readdirSync(path.join(dirname(import.meta.url), '..', '..', 'commands', 'slash'));
 			const commandsOptions: object[] = [];
 
 			for (const folder of folders) {
-				const files: string[] = fs.readdirSync(path.join(dirname, '..', '..', 'slashCommands', 'commands', folder));
+				const files: string[] = fs.readdirSync(path.join(dirname(import.meta.url), '..', '..', 'commands', 'slash', folder));
 
 				for (const file of files) {
-					if (file.endsWith('.js')) {
-						const handler = (await import('../../slashCommands/handler.js')).default;
-						const options = await import(`../../slashCommands/commands/${folder}/${file}`);
+					const handler = (await import('../Handles/Slash.js')).default;
+					const options = new (await import(`../../commands/slash/${folder}/${file}`)).default();
 
-						if (interaction) {
-							handler(this, interaction, options.default);
-						}
+					console.log(options);
 
-						commandsOptions.push(options.default);
+					if (interaction) {
+						handler(this, interaction, options);
 					}
+
+					commandsOptions.push(options);
+				}
+			}
+
+			return commandsOptions;
+		} catch (error) {
+			logger.error(error);
+		}
+	}
+
+	public async loadContextCommands(interaction?: ContextMenuCommandInteraction): Promise<object[] | undefined> {
+		try {
+			const folders: string[] = fs.readdirSync(path.join(dirname(import.meta.url), '..', '..', 'commands', 'context'));
+			const commandsOptions: object[] = [];
+
+			for (const folder of folders) {
+				const files: string[] = fs.readdirSync(path.join(dirname(import.meta.url), '..', '..', 'commands', 'context', folder));
+
+				for (const file of files) {
+					const handler = (await import('../Handles/Context.js')).default;
+					const options = new (await import(`../../commands/context/${folder}/${file}`)).default();
+
+					if (interaction) {
+						handler(this, interaction, options);
+					}
+
+					commandsOptions.push(options);
 				}
 			}
 
@@ -91,9 +113,7 @@ export default class extends Client {
 
 	public connect(token: string | undefined = process.env.OTTO_TOKEN): void {
 		try {
-			super.login(token).then(() => {
-				logger.info(`${this.user?.username} connected successfully, with status: ${this.user?.presence.status}!`);
-			});
+			super.login(token);
 		} catch (error) {
 			logger.error(error);
 		}

@@ -1,10 +1,10 @@
 import debug from 'debug';
 import { nameSpace } from '../../resources/constants/constants.js';
-import { ILogger } from '../../resources/constants/interfaces.js';
+import { IHLogger } from '../../resources/constants/interfaces.js';
 
 const defaultLogger: debug.IDebugger = debug(nameSpace);
 
-const logger: ILogger = {
+const logger: IHLogger = {
 	info: (content) => {
 		const infoLogger = defaultLogger.extend('info');
 
@@ -19,6 +19,11 @@ const logger: ILogger = {
 		const errorLogger = defaultLogger.extend('error');
 
 		errorLogger(content);
+	},
+	debug: (content) => {
+		const debugLogger = defaultLogger.extend('debug');
+
+		debugLogger(content);
 	},
 };
 
